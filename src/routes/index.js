@@ -1,16 +1,20 @@
 const express = require('express');
-const { authenticate } = require('../middleware/auth');
+const { authenticate, requireRole } = require('../middleware/auth');
+const { historyFilters } = require('../middleware/historyFilters');
 const { validateIdParam, requireDateQuery } = require('../middleware/validate');
 const { authController } = require('../controllers/authController');
 const { courseController } = require('../controllers/courseController');
+const { reportController } = require('../controllers/reportController');
 
 /** Express 5 forwards rejected promises to the error handler, so handlers can be plain async. */
 function buildApiRouter(c) {
   const router = express.Router();
   const auth = authController(c);
   const courses = courseController(c);
+  const reports = reportController(c);
   const requireAuth = authenticate(c.authService);
   const courseId = validateIdParam('courseId');
+  const studentId = validateIdParam('studentId');
 
   router.post('/auth/login', auth.login);
   router.get('/auth/me', requireAuth, auth.me);
@@ -25,6 +29,19 @@ function buildApiRouter(c) {
     courses.session
   );
   router.post('/courses/:courseId/attendance', requireAuth, courseId, courses.mark);
+
+  router.get('/courses/:courseId/summary', requireAuth, courseId, reports.courseSummary);
+
+  router.get('/students/:studentId/summary', requireAuth, studentId, reports.studentSummary);
+  router.get(
+    '/students/:studentId/history',
+    requireAuth,
+    studentId,
+    historyFilters,
+    reports.studentHistory
+  );
+
+  router.get('/admin/overview', requireAuth, requireRole('admin'), reports.adminOverview);
 
   return router;
 }
