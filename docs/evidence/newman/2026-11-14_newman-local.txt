@@ -1,0 +1,232 @@
+$ npm run postman   (local server, seeded in-memory DB)
+Sat Nov 14 10:54:47 UTC 2026
+
+> student-attendance-tracker@0.1.0 postman
+> newman run postman/attendance-tracker.postman_collection.json -e postman/local.postman_environment.json -r cli,htmlextra,json --reporter-htmlextra-export reports/newman/report.html --reporter-json-export reports/newman/report.json
+
+newman
+
+Student Attendance Tracker API
+
+❏ 1. Authentication (SAT-15)
+↳ Health check
+  GET http://localhost:3000/api/health [200 OK, 889B, 11ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  status ok
+
+↳ Login — faculty1 (valid)
+  POST http://localhost:3000/api/auth/login [200 OK, 1.21kB, 56ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  returns a JWT and the profile
+
+↳ Login — wrong password → 401
+  POST http://localhost:3000/api/auth/login [401 Unauthorized, 959B, 56ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 401
+  ✓  error code is UNAUTHENTICATED
+  ✓  generic message (no hint which field was wrong)
+
+↳ Login — missing fields → 400
+  POST http://localhost:3000/api/auth/login [400 Bad Request, 965B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 400
+  ✓  error code is VALIDATION_ERROR
+
+↳ Protected route without token → 401
+  GET http://localhost:3000/api/auth/me [401 Unauthorized, 957B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 401
+
+↳ Login — faculty2
+  POST http://localhost:3000/api/auth/login [200 OK, 1.21kB, 55ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  returns a JWT and the profile
+
+↳ Login — student01
+  POST http://localhost:3000/api/auth/login [200 OK, 1.21kB, 53ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  returns a JWT and the profile
+
+↳ Login — student02
+  POST http://localhost:3000/api/auth/login [200 OK, 1.21kB, 53ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  returns a JWT and the profile
+
+↳ Login — admin
+  POST http://localhost:3000/api/auth/login [200 OK, 1.2kB, 54ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  returns a JWT and the profile
+
+❏ 2. Courses and roster (SAT-12, SAT-13, SAT-18)
+↳ Faculty1 course list
+  GET http://localhost:3000/api/courses [200 OK, 1.19kB, 3ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  only own courses
+
+↳ Admin course list
+  GET http://localhost:3000/api/courses [200 OK, 1.33kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  all three courses
+
+↳ Roster CSE706 (faculty1)
+  GET http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/roster [200 OK, 2.19kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  10 students sorted by roll number
+
+↳ RBAC — faculty1 reads CSE705 roster → 403
+  GET http://localhost:3000/api/courses/6af83de95d57585bb309ecde/roster [403 Forbidden, 962B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 403
+  ✓  error code is FORBIDDEN
+
+↳ Malformed course id → 400
+  GET http://localhost:3000/api/courses/not-an-id/roster [400 Bad Request, 960B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 400
+  ✓  error code is VALIDATION_ERROR
+
+❏ 3. Marking attendance (SAT-14, SAT-16)
+↳ Mark CSE706 → 201
+  POST http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance [201 Created, 995B, 3ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 201
+  ✓  10 saved with correct summary
+  ✓  date echoed
+
+↳ Duplicate submission same course + date → 409
+  POST http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance [409 Conflict, 1.05kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 409
+  ✓  error code is CONFLICT
+
+↳ Session read-back shows the saved register
+  GET http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance?date=2025-07-31 [200 OK, 2.43kB, 3ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  marked with 10 records, unchanged by the 409
+
+↳ RBAC — student marks attendance → 403
+  POST http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance [403 Forbidden, 993B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 403
+  ✓  error code is FORBIDDEN
+
+↳ Validation — future date → 400
+  POST http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance [400 Bad Request, 979B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 400
+  ✓  error code is VALIDATION_ERROR
+  ✓  message mentions the future
+
+↳ Validation — unknown status → 400
+  POST http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/attendance [400 Bad Request, 990B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 400
+  ✓  error code is VALIDATION_ERROR
+
+❏ 4. Analytics, filters and isolation (SAT-1, SAT-2, SAT-3, SAT-5)
+↳ Student01 own summary
+  GET http://localhost:3000/api/students/6af83de95d57585bb309ecd2/summary [200 OK, 1.6kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  threshold is 75
+  ✓  each course has percentage and a valid level
+
+↳ Isolation — student01 reads student02 summary → 403
+  GET http://localhost:3000/api/students/6af83de95d57585bb309ecd3/summary [403 Forbidden, 977B, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 403
+  ✓  error code is FORBIDDEN
+
+↳ History filters — course + status + date range
+  GET http://localhost:3000/api/students/6af83de95d57585bb309ecd2/history?courseId=6af83de95d57585bb309ecdc&status=present&from=2026-09-01&to=2026-10-31 [200 OK, 3.45kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  every record matches all filters
+  ✓  count matches records
+
+↳ History filters — from after to → 400
+  GET http://localhost:3000/api/students/6af83de95d57585bb309ecd2/history?from=2026-10-10&to=2026-10-01 [400 Bad Request, 970B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 400
+  ✓  error code is VALIDATION_ERROR
+
+↳ Faculty1 course summary CSE706
+  GET http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/summary [200 OK, 3.74kB, 2ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  10 students with figures
+  ✓  belowThreshold matches the list
+
+↳ RBAC — student reads course summary → 403
+  GET http://localhost:3000/api/courses/6af83de95d57585bb309ecdc/summary [403 Forbidden, 962B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 403
+
+↳ Admin overview
+  GET http://localhost:3000/api/admin/overview [200 OK, 1.67kB, 4ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 200
+  ✓  user totals
+
+↳ RBAC — faculty reads admin overview → 403
+  GET http://localhost:3000/api/admin/overview [403 Forbidden, 962B, 1ms]
+  ✓  responds within 1000 ms
+  ✓  responds with JSON
+  ✓  status is 403
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               28 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               56 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                2 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │              115 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 694ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 13.56kB (approx)                         │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 13ms [min: 1ms, max: 56ms, s.d.: 21ms] │
+└───────────────────────────────────────────────────────────────┘
