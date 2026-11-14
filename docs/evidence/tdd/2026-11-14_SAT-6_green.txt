@@ -1,0 +1,11 @@
+$ npm run test:unit   (after implementation)
+Sat Nov 14 10:42:29 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:unit
+> NODE_OPTIONS=--experimental-vm-modules jest tests/unit --verbose
+
+Test Suites: 5 passed, 5 total
+Tests:       63 passed, 63 total
+Snapshots:   0 total
+Time:        0.402 s, estimated 1 s
+Ran all test suites matching tests/unit.
