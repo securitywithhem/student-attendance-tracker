@@ -6,6 +6,7 @@ const config = Object.freeze({
   mongoUri: process.env.MONGO_URI || '',
   jwtSecret: process.env.JWT_SECRET || 'dev-only-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '8h',
+  loginMaxFailures: toInt(process.env.LOGIN_MAX_FAILURES, 10),
   seedOnStart: (process.env.SEED_ON_START || 'true') !== 'false',
   env: process.env.NODE_ENV || 'development',
 });

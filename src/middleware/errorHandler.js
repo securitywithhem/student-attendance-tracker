@@ -14,6 +14,11 @@ function errorHandler(err, req, res, _next) {
     if (err.details) body.error.details = err.details;
     return res.status(err.status).json(body);
   }
+  if (err && err.type === 'entity.too.large') {
+    return res
+      .status(413)
+      .json({ error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body is too large' } });
+  }
   if (err && err.type === 'entity.parse.failed') {
     return res
       .status(400)

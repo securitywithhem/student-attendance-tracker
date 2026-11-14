@@ -49,6 +49,7 @@ function buildContainer(overrides = {}) {
   });
 
   return {
+    loginRateLimit: { maxFailures: settings.loginMaxFailures },
     attendanceQueryService,
     userRepository,
     courseRepository,
