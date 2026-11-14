@@ -1,0 +1,27 @@
+$ npm run test:unit   (branch feature/SAT-6-attendance-calculation, before implementation)
+Sat Nov 14 10:42:09 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:unit
+> NODE_OPTIONS=--experimental-vm-modules jest tests/unit
+
+FAIL tests/unit/attendanceCalculator.test.js
+  ● Test suite failed to run
+
+    Cannot find module '../../src/services/AttendanceCalculator' from 'tests/unit/attendanceCalculator.test.js'
+
+      1 | // SAT-6 — percentage calculation, written before the implementation (TDD red step).
+    > 2 | const { AttendanceCalculator } = require('../../src/services/AttendanceCalculator');
+        |                                  ^
+      3 | const defaultRules = require('../../src/config/attendanceRules');
+      4 |
+      5 | const calc = new AttendanceCalculator(defaultRules);
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.require (tests/unit/attendanceCalculator.test.js:2:34)
+
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       49 passed, 49 total
+Snapshots:   0 total
+Time:        0.489 s, estimated 1 s
+Ran all test suites matching tests/unit.
