@@ -1,0 +1,43 @@
+$ npx jest tests/integration/hardening.test.js --verbose   (before SAT-7 changes)
+Sat Nov 14 10:52:03 UTC 2026
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL tests/integration/hardening.test.js
+  ● AC2: safe error responses › oversized request body → 413 JSON, not a crash
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 413
+    Received: 500
+
+      94 |       .set('Content-Type', 'application/json')
+      95 |       .send(JSON.stringify({ email: 'a@b.c', password: 'x'.repeat(200 * 1024) }));
+    > 96 |     expect(res.status).toBe(413);
+         |                        ^
+      97 |     expect(res.body.error.code).toBe('PAYLOAD_TOO_LARGE');
+      98 |   });
+      99 |
+
+      at Object.toBe (tests/integration/hardening.test.js:96:24)
+
+  ● AC2: safe error responses › repeated failed logins are rate limited (429)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 429
+    Received: 401
+
+      112 |         .send({ email: 'brute@sat.edu', password: `guess${i}` });
+      113 |     }
+    > 114 |     expect(last.status).toBe(429);
+          |                         ^
+      115 |     expect(last.body.error.code).toBe('TOO_MANY_REQUESTS');
+      116 |     // a different account from the same client is not locked out
+      117 |     const other = await request(app)
+
+      at Object.toBe (tests/integration/hardening.test.js:114:25)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 9 passed, 11 total
+Snapshots:   0 total
+Time:        1.254 s
+Ran all test suites matching tests/integration/hardening.test.js.

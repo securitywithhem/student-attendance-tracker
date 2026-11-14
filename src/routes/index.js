@@ -1,6 +1,7 @@
 const express = require('express');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { historyFilters } = require('../middleware/historyFilters');
+const { loginRateLimit } = require('../middleware/loginRateLimit');
 const { validateIdParam, requireDateQuery } = require('../middleware/validate');
 const { authController } = require('../controllers/authController');
 const { courseController } = require('../controllers/courseController');
@@ -16,7 +17,7 @@ function buildApiRouter(c) {
   const courseId = validateIdParam('courseId');
   const studentId = validateIdParam('studentId');
 
-  router.post('/auth/login', auth.login);
+  router.post('/auth/login', loginRateLimit(c.loginRateLimit), auth.login);
   router.get('/auth/me', requireAuth, auth.me);
 
   router.get('/courses', requireAuth, courses.list);
