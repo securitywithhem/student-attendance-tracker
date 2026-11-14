@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NODE_ENV: test
+      JWT_SECRET: ci-only-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cache MongoDB binary (mongodb-memory-server)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Unit and integration tests with coverage
+        run: npm run test:coverage -- --ci
+
+      - name: Start server for API tests
+        if: hashFiles('postman/*.postman_collection.json') != ''
+        run: |
+          NODE_ENV=production PORT=3000 npm start > server.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:3000/api/health && break
+            sleep 2
+          done
+          curl -sf http://localhost:3000/api/health
+
+      - name: Postman API tests (Newman)
+        if: hashFiles('postman/*.postman_collection.json') != ''
+        run: npm run postman
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            reports/
+            server.log
+          if-no-files-found: ignore
