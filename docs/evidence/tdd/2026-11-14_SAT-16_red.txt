@@ -1,0 +1,42 @@
+$ npm run test:unit   (branch feature/SAT-16-duplicate-prevention, before implementation)
+Sat Nov 14 10:32:57 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:unit
+> NODE_OPTIONS=--experimental-vm-modules jest tests/unit
+
+FAIL tests/unit/attendanceRecorder.test.js
+  ● Test suite failed to run
+
+    Cannot find module '../../src/services/AttendanceRecorder' from 'tests/unit/attendanceRecorder.test.js'
+
+      1 | // SAT-16 / SAT-20 — duplicate prevention, written before the implementation (TDD red step).
+    > 2 | const { AttendanceRecorder } = require('../../src/services/AttendanceRecorder');
+        |                                ^
+      3 | const { AttendanceValidator } = require('../../src/services/AttendanceValidator');
+      4 | const {
+      5 |   InMemoryCourseRepository,
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.require (tests/unit/attendanceRecorder.test.js:2:32)
+
+FAIL tests/unit/attendanceValidator.test.js
+  ● Test suite failed to run
+
+    Cannot find module '../../src/services/AttendanceValidator' from 'tests/unit/attendanceValidator.test.js'
+
+      1 | // SAT-14 AC2 — validation rules for a marking request (written before the implementation).
+    > 2 | const { AttendanceValidator } = require('../../src/services/AttendanceValidator');
+        |                                 ^
+      3 | const { ValidationError } = require('../../src/utils/errors');
+      4 |
+      5 | const course = { id: 'c1', facultyId: 'f1', studentIds: ['s1', 's2', 's3'] };
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.require (tests/unit/attendanceValidator.test.js:2:33)
+
+
+Test Suites: 2 failed, 2 passed, 4 total
+Tests:       24 passed, 24 total
+Snapshots:   0 total
+Time:        0.349 s, estimated 1 s
+Ran all test suites matching tests/unit.
