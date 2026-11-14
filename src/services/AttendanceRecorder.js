@@ -47,7 +47,7 @@ class AttendanceRecorder {
       throw err;
     }
 
-    const summary = { present: 0, late: 0, absent: 0 };
+    const summary = this.validator.emptyCounts();
     for (const r of valid.records) summary[r.status] += 1;
     return { courseId: course.id, date: valid.date, saved: valid.records.length, summary };
   }

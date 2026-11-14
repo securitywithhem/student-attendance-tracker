@@ -1,8 +1,10 @@
+const { isValidObjectId } = require('mongoose');
 const { Course } = require('../../models/Course');
 const { toCourse } = require('./mappers');
 
 class MongoCourseRepository {
   async findById(id) {
+    if (!isValidObjectId(id)) return null;
     return toCourse(await Course.findById(id).lean());
   }
 

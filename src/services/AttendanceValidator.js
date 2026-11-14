@@ -56,6 +56,11 @@ class AttendanceValidator {
     }
     return { date, records: normalised };
   }
+
+  /** Zero count for every configured status, so callers never hard-code the list. */
+  emptyCounts() {
+    return Object.fromEntries(this.statuses.map((s) => [s, 0]));
+  }
 }
 
 module.exports = { AttendanceValidator, isCalendarDate };

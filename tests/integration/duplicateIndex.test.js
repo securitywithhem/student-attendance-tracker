@@ -59,3 +59,20 @@ test('two simultaneous submissions: exactly one succeeds, the other gets Conflic
     course.studentIds.length
   );
 });
+
+test('review fix: a malformed course id is NotFound, not a database CastError (500)', async () => {
+  const { NotFoundError } = require('../../src/utils/errors');
+  const recorder = new AttendanceRecorder({
+    courseRepository: courses,
+    attendanceRepository: attendance,
+    validator: new AttendanceValidator({ clock: { today: () => '2026-11-14' } }),
+  });
+  await expect(
+    recorder.markAttendance({
+      user: { id: faculty.id, role: 'faculty' },
+      courseId: 'nope',
+      date: '2026-11-04',
+      records: register(),
+    })
+  ).rejects.toThrow(NotFoundError);
+});
