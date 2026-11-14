@@ -7,6 +7,9 @@ const { MongoAttendanceRepository } = require('./repositories/mongo/MongoAttenda
 const { AuthService } = require('./services/AuthService');
 const { JwtTokenService } = require('./services/JwtTokenService');
 const { BcryptPasswordHasher } = require('./services/BcryptPasswordHasher');
+const { CourseService } = require('./services/CourseService');
+const { AttendanceRecorder } = require('./services/AttendanceRecorder');
+const { AttendanceValidator } = require('./services/AttendanceValidator');
 
 function buildContainer(overrides = {}) {
   const settings = { ...config, ...overrides };
@@ -23,7 +26,25 @@ function buildContainer(overrides = {}) {
     }),
   });
 
-  return { userRepository, courseRepository, attendanceRepository, authService };
+  const courseService = new CourseService({
+    courseRepository,
+    userRepository,
+    attendanceRepository,
+  });
+  const attendanceRecorder = new AttendanceRecorder({
+    courseRepository,
+    attendanceRepository,
+    validator: new AttendanceValidator(),
+  });
+
+  return {
+    userRepository,
+    courseRepository,
+    attendanceRepository,
+    authService,
+    courseService,
+    attendanceRecorder,
+  };
 }
 
 module.exports = { buildContainer };
