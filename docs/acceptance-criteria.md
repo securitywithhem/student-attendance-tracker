@@ -1,0 +1,153 @@
+# Acceptance criteria
+
+User-story wording and Given/When/Then criteria for each Jira story. The Jira descriptions are
+empty, so the criteria live here. Test IDs refer to Jest test names (`tests/`) and Postman
+requests (`postman/`); `docs/testing/traceability.md` maps them to results.
+
+### SAT-15 Login and JWT Authentication (EPIC 1)
+
+_As a user (admin, faculty or student), I want to log in with my email and password so that I can
+reach the screens for my role._
+
+- **AC1** Given a registered user, when they submit the correct credentials, then they receive a
+  signed JWT and their profile (name, email, role) with HTTP 200.
+- **AC2** Given a wrong password or unknown email, when they log in, then they get HTTP 401 with the
+  same generic message (no hint about which part was wrong).
+- **AC3** Given a request without a token, or with an expired or tampered token, when it calls a
+  protected API, then it gets HTTP 401.
+
+### SAT-18 Role-Based Access Control (EPIC 1)
+
+_As an admin, I want each role to reach only its own functions so that records stay private and
+correct._
+
+- **AC1** Given a student, when they try to mark attendance or read a course summary, then they get
+  HTTP 403.
+- **AC2** Given a faculty member, when they try to mark or read a course they do not teach, then
+  they get HTTP 403.
+- **AC3** Given a student, when they request another student's history or summary, then they get
+  HTTP 403.
+- **AC4** Given an admin, when they read any course or student, then access is allowed.
+
+### SAT-17 Academic Models & Seed Data (EPIC 2)
+
+_As a developer, I want users, courses and attendance models with seed data so that every screen
+has realistic data to show._
+
+- **AC1** Given an empty database, when the app starts, then it seeds 1 admin, 2 faculty,
+  10 students, 3 courses and about 20 sessions of attendance.
+- **AC2** Given the attendance collection, then a unique index exists on (course, student, date).
+
+### SAT-12 Faculty Course Listing Screen (EPIC 2)
+
+_As a faculty member, I want to see the courses I teach so that I can open one to take attendance._
+
+- **AC1** Given a logged-in faculty member, when they open their dashboard, then they see only their
+  own courses with code, name and enrolled count.
+- **AC2** Given a student, when they request the course list, then they see only courses they are
+  enrolled in.
+
+### SAT-13 Student Roster Table (EPIC 2)
+
+_As a faculty member, I want to see the roster of a course so that I know whom to mark._
+
+- **AC1** Given a course the faculty member teaches, when they open it, then the enrolled students are
+  listed by roll number with name and email.
+- **AC2** Given a course they do not teach, then the roster request returns 403.
+
+### SAT-14 Mark Daily Attendance API & UI (EPIC 2)
+
+_As a faculty member, I want to mark Present/Late/Absent for every student on a date so that the
+register is complete in seconds._
+
+- **AC1** Given a valid date and a status for each enrolled student, when the faculty member submits,
+  then the records are saved and the API returns 201 with the count saved.
+- **AC2** Given a missing or invalid date, a future date, an unknown status, a student not in the
+  roster, or an empty list, then the API returns 400 with a clear message and nothing is saved.
+- **AC3** In the UI, all students default to Present, with one-click toggles and a "mark all" action.
+
+### SAT-16 Duplicate Attendance Prevention (EPIC 2)
+
+_As a faculty member, I want the system to reject a second submission for the same course and date
+so that the register is never double-counted._
+
+- **AC1** Given attendance already exists for a course and date, when it is submitted again, then the
+  API returns 409 and no records change.
+- **AC2** Given two submissions race each other, then the database unique index still allows only one
+  record per (course, student, date), and the loser gets 409.
+- **AC3** The same date in a different course is accepted.
+
+### SAT-20 TDD Tests for Auth & Duplicate Prevention (EPIC 4)
+
+_As the QA lead, I want auth and duplicate prevention built test-first so that the riskiest rules are
+proven._
+
+- **AC1** The git history shows a failing-test commit before the implementation commit for auth,
+  role checks and duplicate prevention.
+
+### SAT-19 GitHub Repo & CI Setup (EPIC 4)
+
+_As the team, we want a shared repo with CI so that every change is tested automatically._
+
+- **AC1** Given a push or pull request, then GitHub Actions installs dependencies, lints and runs the
+  tests with coverage, and the PR shows the result.
+
+### SAT-6 Attendance Calculation Aggregation (EPIC 3)
+
+_As a student, I want my percentage calculated correctly so that I can trust it._
+
+- **AC1** percentage = (present + late) / total × 100 (weights in config), rounded to 1 decimal.
+- **AC2** Given zero sessions, then the percentage is reported as no data (not 0% and no division
+  error).
+- **AC3** Given exactly 75.0%, then the status is "ok"; given 74.9%, then it is "warning".
+
+### SAT-1 Student Attendance Percentage Dashboard (EPIC 3)
+
+_As a student, I want a dashboard of my percentage per course so that I know where I stand._
+
+- **AC1** Given a logged-in student, when they open the dashboard, then they see each enrolled course
+  with attended/total, percentage and an overall figure.
+
+### SAT-2 Attendance History Table & Filters (EPIC 3)
+
+_As a student, I want to filter my attendance history so that I can check specific days._
+
+- **AC1** Given filters for course, date range and status, then only matching records are shown,
+  newest first.
+- **AC2** Given an invalid date range (from after to), then the API returns 400.
+
+### SAT-3 Threshold Alert Badges (EPIC 3)
+
+_As a student, I want a visible alert when a course is below the threshold so that I can act in time._
+
+- **AC1** Given a course below 75%, then it shows a warning badge; below 65%, a critical badge; at or
+  above 75%, an OK badge. Thresholds come from config.
+
+### SAT-5 Faculty Attendance Summaries API (EPIC 3)
+
+_As a faculty member, I want a per-student summary of my course so that I can spot at-risk students._
+
+- **AC1** Given a course they teach, then the API returns each student's attended/total/percentage
+  and alert level, plus the number of sessions held and the count below threshold.
+
+### SAT-7 Query Performance & Error Hardening (EPIC 3)
+
+_As the team, we want fast queries and safe errors so that the app is reliable._
+
+- **AC1** Indexes exist for (course, student, date) and (student, date).
+- **AC2** Malformed IDs return 400, unknown routes 404, and server errors return JSON without stack
+  traces.
+
+### SAT-8 Automated Postman API Test Suite (EPIC 4)
+
+- **AC1** At least 12 requests covering login ok/fail, RBAC 403, mark 201, duplicate 409, data
+  isolation, summary, filters and validation, each with status, body and response-time tests,
+  run by Newman in CI with HTML and JSON reports.
+
+### SAT-11 Final CI Run Verification (EPIC 4)
+
+- **AC1** The final `main` commit has a green CI run that includes lint, Jest with coverage and Newman.
+
+### SAT-9 Acceptance Testing & Evaluation Report · SAT-10 Pair Programming & Code Review Logs · SAT-4 Product Demonstration Presentation (EPIC 4)
+
+Process deliverables, tracked in `docs/testing/`, `docs/scrum/` and `docs/report/`.
