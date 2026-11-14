@@ -1,0 +1,43 @@
+$ npm run test:unit   (branch feature/SAT-15-jwt-auth-rbac, before implementation)
+Sat Nov 14 10:30:21 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:unit
+> NODE_OPTIONS=--experimental-vm-modules jest tests/unit
+
+FAIL tests/unit/accessPolicy.test.js
+  ● Test suite failed to run
+
+    Cannot find module '../../src/policies/AccessPolicy' from 'tests/unit/accessPolicy.test.js'
+
+       5 |   FacultyPolicy,
+       6 |   StudentPolicy,
+    >  7 | } = require('../../src/policies/AccessPolicy');
+         |     ^
+       8 |
+       9 | const admin = { id: 'a1', role: 'admin' };
+      10 | const faculty = { id: 'f1', role: 'faculty' };
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.require (tests/unit/accessPolicy.test.js:7:5)
+
+FAIL tests/unit/authService.test.js
+  ● Test suite failed to run
+
+    Cannot find module '../../src/services/AuthService' from 'tests/unit/authService.test.js'
+
+      2 | const bcrypt = require('bcryptjs');
+      3 | const jwt = require('jsonwebtoken');
+    > 4 | const { AuthService } = require('../../src/services/AuthService');
+        |                         ^
+      5 | const { JwtTokenService } = require('../../src/services/JwtTokenService');
+      6 | const { BcryptPasswordHasher } = require('../../src/services/BcryptPasswordHasher');
+      7 | const { InMemoryUserRepository } = require('../../src/repositories/memory');
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:1031:11)
+      at Object.require (tests/unit/authService.test.js:4:25)
+
+Test Suites: 2 failed, 2 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.192 s
+Ran all test suites matching tests/unit.
