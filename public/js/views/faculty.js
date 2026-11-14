@@ -61,7 +61,14 @@
           <h1>${esc(course.name)}</h1>
           <p>${students.length} students enrolled</p>
         </div>
-      </div>`;
+      </div>
+      ${window.Shared.tabs(
+        [
+          ['mark', 'Take attendance', `#/course/${courseId}`],
+          ['summary', 'Class summary', `#/course/${courseId}/summary`],
+        ],
+        'mark'
+      )}`;
 
     const dateControl = `
       <label class="muted" for="att-date">Date</label>
@@ -199,6 +206,27 @@
     });
   }
 
+  // Class summary (SAT-5): per-student percentages with alert badges (SAT-3).
+  async function courseSummary(courseId) {
+    loading('Loading class summary…');
+    const s = await Api.get(`/courses/${courseId}/summary`);
+    render(`
+      <a class="back-link" href="#/">← All courses</a>
+      <div class="page-head"><div>
+        <span class="course-code">${esc(s.course.code)}</span>
+        <h1>${esc(s.course.name)}</h1>
+        <p>${s.students.length} students enrolled</p>
+      </div></div>
+      ${window.Shared.tabs(
+        [
+          ['mark', 'Take attendance', `#/course/${courseId}`],
+          ['summary', 'Class summary', `#/course/${courseId}/summary`],
+        ],
+        'summary'
+      )}
+      ${window.Shared.summaryTable(s)}`);
+  }
+
   window.Views = window.Views || {};
-  window.Views.faculty = { courseList, coursePage };
+  window.Views.faculty = { courseList, coursePage, courseSummary };
 })();

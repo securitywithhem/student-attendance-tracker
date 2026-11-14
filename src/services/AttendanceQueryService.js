@@ -109,13 +109,18 @@ class AttendanceQueryService {
       this.attendance.countSessions(),
       this.courses.findAll(),
     ]);
-    const summaries = await Promise.all(courses.map((c) => this.courseSummary(user, c.id)));
+    const [summaries, faculty] = await Promise.all([
+      Promise.all(courses.map((c) => this.courseSummary(user, c.id))),
+      this.users.findByIds([...new Set(courses.map((c) => c.facultyId))]),
+    ]);
+    const facultyName = Object.fromEntries(faculty.map((f) => [f.id, f.name]));
     return {
       users: { admin: users.admin || 0, faculty: users.faculty || 0, student: users.student || 0 },
       sessions,
       threshold: this.rules.threshold,
-      courses: summaries.map(({ students, ...rest }) => ({
+      courses: summaries.map(({ students, ...rest }, i) => ({
         ...rest,
+        facultyName: facultyName[courses[i].facultyId] || null,
         studentCount: students.length,
       })),
     };
