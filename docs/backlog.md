@@ -4,37 +4,37 @@
 
 ## Epics
 
-| Key    | Epic                                                    | Stories | Points |
-| ------ | ------------------------------------------------------- | ------- | ------ |
-| SAT-21 | EPIC 1: User Authentication & Role-Based Access Control | 2       | 8      |
-| SAT-22 | EPIC 2: Daily Attendance Management & Validation Engine | 5       | 22     |
-| SAT-23 | EPIC 3: Student Analytics Dashboard & Reporting         | 6       | 23     |
-| SAT-24 | EPIC 4: Quality Assurance, DevOps & Agile Governance    | 7       | 19     |
+| Key | Epic | Stories | Points |
+|---|---|---|---|
+| SAT-21 | undefined | 2 | 8 |
+| SAT-22 | undefined | 5 | 22 |
+| SAT-23 | undefined | 6 | 23 |
+| SAT-24 | undefined | 7 | 19 |
 
 ## Stories
 
-| Key    | Story                                     | Epic   | Sprint       | Priority | Points | Assignee             | Status |
-| ------ | ----------------------------------------- | ------ | ------------ | -------- | ------ | -------------------- | ------ |
-| SAT-1  | Student Attendance Percentage Dashboard   | SAT-23 | SAT Sprint 2 | Medium   | 5      | Hem Gabhawala        | Done   |
-| SAT-2  | Attendance History Table & Filters        | SAT-23 | SAT Sprint 2 | Medium   | 5      | Hem Gabhawala        | Done   |
-| SAT-3  | Threshold Alert Badges                    | SAT-23 | SAT Sprint 2 | Medium   | 2      | Hem Gabhawala        | Done   |
-| SAT-4  | Product Demonstration Presentation        | SAT-24 | SAT Sprint 2 | Medium   | 2      | Hem Gabhawala        | Done   |
-| SAT-5  | Faculty Attendance Summaries API          | SAT-23 | SAT Sprint 2 | Medium   | 5      | vaghela.c.girishbhai | Done   |
-| SAT-6  | Attendance Calculation Aggregation        | SAT-23 | SAT Sprint 2 | Medium   | 3      | vaghela.c.girishbhai | Done   |
-| SAT-7  | Query Performance & Error Hardening       | SAT-23 | SAT Sprint 2 | Medium   | 3      | vaghela.c.girishbhai | Done   |
-| SAT-8  | Automated Postman API Test Suite          | SAT-24 | SAT Sprint 2 | Medium   | 5      | VATSAL PATEL         | Done   |
-| SAT-9  | Acceptance Testing & Evaluation Report    | SAT-24 | SAT Sprint 2 | Medium   | 3      | VATSAL PATEL         | Done   |
-| SAT-10 | Pair Programming & Code Review Logs       | SAT-24 | SAT Sprint 2 | Medium   | 2      | VATSAL PATEL         | Done   |
-| SAT-11 | Final CI Run Verification                 | SAT-24 | SAT Sprint 2 | Medium   | 2      | VATSAL PATEL         | Done   |
-| SAT-12 | Faculty Course Listing Screen             | SAT-22 | SAT Sprint 1 | Medium   | 3      | Hem Gabhawala        | Done   |
-| SAT-13 | Student Roster Table                      | SAT-22 | SAT Sprint 1 | Medium   | 3      | Hem Gabhawala        | Done   |
-| SAT-14 | Mark Daily Attendance API & UI            | SAT-22 | SAT Sprint 1 | Medium   | 8      | Hem Gabhawala        | Done   |
-| SAT-15 | Login and JWT Authentication              | SAT-21 | SAT Sprint 1 | Medium   | 5      | vaghela.c.girishbhai | Done   |
-| SAT-16 | Duplicate Attendance Prevention           | SAT-22 | SAT Sprint 1 | Medium   | 3      | vaghela.c.girishbhai | Done   |
-| SAT-17 | Academic Models & Seed Data               | SAT-22 | SAT Sprint 1 | Medium   | 5      | vaghela.c.girishbhai | Done   |
-| SAT-18 | Role-Based Access Control                 | SAT-21 | SAT Sprint 1 | Medium   | 3      | vaghela.c.girishbhai | Done   |
-| SAT-19 | GitHub Repo & CI Setup                    | SAT-24 | SAT Sprint 1 | Medium   | 2      | VATSAL PATEL         | Done   |
-| SAT-20 | TDD Tests for Auth & Duplicate Prevention | SAT-24 | SAT Sprint 1 | Medium   | 3      | VATSAL PATEL         | Done   |
+| Key | Story | Epic | Sprint | Priority | Points | Assignee | Status |
+|---|---|---|---|---|---|---|---|
+| SAT-1 | undefined | SAT-23 | SAT Sprint 2 | Medium | 5 | Hem Gabhawala | Done |
+| SAT-2 | undefined | SAT-23 | SAT Sprint 2 | Medium | 5 | Hem Gabhawala | Done |
+| SAT-3 | undefined | SAT-23 | SAT Sprint 2 | Medium | 2 | Hem Gabhawala | Done |
+| SAT-4 | undefined | SAT-24 | SAT Sprint 2 | Medium | 2 | Hem Gabhawala | Done |
+| SAT-5 | undefined | SAT-23 | SAT Sprint 2 | Medium | 5 | vaghela.c.girishbhai | Done |
+| SAT-6 | undefined | SAT-23 | SAT Sprint 2 | Medium | 3 | vaghela.c.girishbhai | Done |
+| SAT-7 | undefined | SAT-23 | SAT Sprint 2 | Medium | 3 | vaghela.c.girishbhai | Done |
+| SAT-8 | undefined | SAT-24 | SAT Sprint 2 | Medium | 5 | VATSAL PATEL | Done |
+| SAT-9 | undefined | SAT-24 | SAT Sprint 2 | Medium | 3 | VATSAL PATEL | Done |
+| SAT-10 | undefined | SAT-24 | SAT Sprint 2 | Medium | 2 | VATSAL PATEL | Done |
+| SAT-11 | undefined | SAT-24 | SAT Sprint 2 | Medium | 2 | VATSAL PATEL | Done |
+| SAT-12 | undefined | SAT-22 | SAT Sprint 1 | Medium | 3 | Hem Gabhawala | Done |
+| SAT-13 | undefined | SAT-22 | SAT Sprint 1 | Medium | 3 | Hem Gabhawala | Done |
+| SAT-14 | undefined | SAT-22 | SAT Sprint 1 | Medium | 8 | Hem Gabhawala | Done |
+| SAT-15 | undefined | SAT-21 | SAT Sprint 1 | Medium | 5 | vaghela.c.girishbhai | Done |
+| SAT-16 | undefined | SAT-22 | SAT Sprint 1 | Medium | 3 | vaghela.c.girishbhai | Done |
+| SAT-17 | undefined | SAT-22 | SAT Sprint 1 | Medium | 5 | vaghela.c.girishbhai | Done |
+| SAT-18 | undefined | SAT-21 | SAT Sprint 1 | Medium | 3 | vaghela.c.girishbhai | Done |
+| SAT-19 | undefined | SAT-24 | SAT Sprint 1 | Medium | 2 | VATSAL PATEL | Done |
+| SAT-20 | undefined | SAT-24 | SAT Sprint 1 | Medium | 3 | VATSAL PATEL | Done |
 
 ## Totals (reconciliation)
 
@@ -42,11 +42,11 @@
 - SAT Sprint 2: 11 stories, 37 points
 - SAT Sprint 1: 9 stories, 35 points
 
-| Assignee             | Stories | Points |
-| -------------------- | ------- | ------ |
-| Hem Gabhawala        | 7       | 28     |
-| vaghela.c.girishbhai | 7       | 27     |
-| VATSAL PATEL         | 6       | 17     |
+| Assignee | Stories | Points |
+|---|---|---|
+| Hem Gabhawala | 7 | 28 |
+| vaghela.c.girishbhai | 7 | 27 |
+| VATSAL PATEL | 6 | 17 |
 
 ## Data-quality notes from the export
 
@@ -55,7 +55,7 @@
 - Story descriptions are empty in the export (20 of 20); acceptance criteria are kept in this repo (see below).
 - Epics were created on 21 Oct 2026, after the stories (12 Oct 2026), and remain "To Do".
 
-## Acceptance criteria
+# Acceptance criteria
 
 User-story wording and Given/When/Then criteria for each Jira story. The Jira descriptions are
 empty, so the criteria live here. Test IDs refer to Jest test names (`tests/`) and Postman
