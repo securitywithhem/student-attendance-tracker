@@ -1,0 +1,854 @@
+{
+  "info": {
+    "name": "Student Attendance Tracker API",
+    "description": "SAT-8 automated API suite. Covers login ok/fail, RBAC 403s, mark 201, duplicate 409, data isolation, summaries, filters and validation. Every request also checks JSON content type and response time (collection-level test).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds within 1000 ms', () => pm.expect(pm.response.responseTime).to.be.below(1000));",
+          "pm.test('responds with JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication (SAT-15)",
+      "item": [
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status ok', () => pm.expect(pm.response.json().status).to.eql('ok'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/health"
+          }
+        },
+        {
+          "name": "Login — faculty1 (valid)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns a JWT and the profile', () => { pm.expect(b.token.split('.')).to.have.length(3); pm.expect(b.user.email).to.eql('faculty1@sat.edu'); pm.expect(b.user).to.not.have.property('passwordHash'); });",
+                  "pm.collectionVariables.set('faculty1Token', b.token);",
+                  "pm.collectionVariables.set('faculty1Id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"faculty1@sat.edu\", \"password\": \"{{password}}\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login — wrong password → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('error code is UNAUTHENTICATED', () => pm.expect(pm.response.json().error.code).to.eql('UNAUTHENTICATED'));",
+                  "pm.test('generic message (no hint which field was wrong)', () => pm.expect(pm.response.json().error.message).to.eql('Invalid email or password'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"faculty1@sat.edu\", \"password\": \"wrong-password\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login — missing fields → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('error code is VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Protected route without token → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        },
+        {
+          "name": "Login — faculty2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns a JWT and the profile', () => { pm.expect(b.token.split('.')).to.have.length(3); pm.expect(b.user.email).to.eql('faculty2@sat.edu'); pm.expect(b.user).to.not.have.property('passwordHash'); });",
+                  "pm.collectionVariables.set('faculty2Token', b.token);",
+                  "pm.collectionVariables.set('faculty2Id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"faculty2@sat.edu\", \"password\": \"{{password}}\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login — student01",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns a JWT and the profile', () => { pm.expect(b.token.split('.')).to.have.length(3); pm.expect(b.user.email).to.eql('student01@sat.edu'); pm.expect(b.user).to.not.have.property('passwordHash'); });",
+                  "pm.collectionVariables.set('student01Token', b.token);",
+                  "pm.collectionVariables.set('student01Id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"student01@sat.edu\", \"password\": \"{{password}}\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login — student02",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns a JWT and the profile', () => { pm.expect(b.token.split('.')).to.have.length(3); pm.expect(b.user.email).to.eql('student02@sat.edu'); pm.expect(b.user).to.not.have.property('passwordHash'); });",
+                  "pm.collectionVariables.set('student02Token', b.token);",
+                  "pm.collectionVariables.set('student02Id', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"student02@sat.edu\", \"password\": \"{{password}}\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login — admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('returns a JWT and the profile', () => { pm.expect(b.token.split('.')).to.have.length(3); pm.expect(b.user.email).to.eql('admin@sat.edu'); pm.expect(b.user).to.not.have.property('passwordHash'); });",
+                  "pm.collectionVariables.set('adminToken', b.token);",
+                  "pm.collectionVariables.set('adminId', b.user.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"email\": \"admin@sat.edu\", \"password\": \"{{password}}\" }"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Courses and roster (SAT-12, SAT-13, SAT-18)",
+      "item": [
+        {
+          "name": "Faculty1 course list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const courses = pm.response.json().courses;",
+                  "pm.test('only own courses', () => pm.expect(courses.map(c => c.code).sort()).to.eql(['CSE701', 'CSE706']));",
+                  "pm.collectionVariables.set('cse706Id', courses.find(c => c.code === 'CSE706').id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses"
+          }
+        },
+        {
+          "name": "Admin course list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const courses = pm.response.json().courses;",
+                  "pm.test('all three courses', () => pm.expect(courses).to.have.length(3));",
+                  "pm.collectionVariables.set('cse705Id', courses.find(c => c.code === 'CSE705').id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses"
+          }
+        },
+        {
+          "name": "Roster CSE706 (faculty1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('10 students sorted by roll number', () => { const r = b.students.map(s => s.rollNo); pm.expect(r).to.have.length(10); pm.expect(r).to.eql([...r].sort()); });",
+                  "pm.collectionVariables.set('rosterIds', JSON.stringify(b.students.map(s => s.id)));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/roster"
+          }
+        },
+        {
+          "name": "RBAC — faculty1 reads CSE705 roster → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('error code is FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/{{cse705Id}}/roster"
+          }
+        },
+        {
+          "name": "Malformed course id → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('error code is VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/not-an-id/roster"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Marking attendance (SAT-14, SAT-16)",
+      "item": [
+        {
+          "name": "Mark CSE706 → 201",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// A random 2025 date keeps the suite re-runnable against the same server.",
+                  "const d = new Date(Date.UTC(2025, 0, 1) + Math.floor(Math.random() * 365) * 86400000);",
+                  "const date = d.toISOString().slice(0, 10);",
+                  "const ids = JSON.parse(pm.collectionVariables.get('rosterIds'));",
+                  "const records = ids.map((studentId, i) => ({ studentId, status: i === 0 ? 'absent' : i === 1 ? 'late' : 'present' }));",
+                  "pm.collectionVariables.set('markDate', date);",
+                  "pm.collectionVariables.set('markBody', JSON.stringify({ date, records }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));",
+                  "const b = pm.response.json();",
+                  "pm.test('10 saved with correct summary', () => { pm.expect(b.saved).to.eql(10); pm.expect(b.summary).to.eql({ present: 8, late: 1, absent: 1 }); });",
+                  "pm.test('date echoed', () => pm.expect(b.date).to.eql(pm.collectionVariables.get('markDate')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{markBody}}"
+            },
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance"
+          }
+        },
+        {
+          "name": "Duplicate submission same course + date → 409",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 409', () => pm.response.to.have.status(409));",
+                  "pm.test('error code is CONFLICT', () => pm.expect(pm.response.json().error.code).to.eql('CONFLICT'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{markBody}}"
+            },
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance"
+          }
+        },
+        {
+          "name": "Session read-back shows the saved register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('marked with 10 records, unchanged by the 409', () => { const b = pm.response.json(); pm.expect(b.marked).to.eql(true); pm.expect(b.records.filter(r => r.status === 'absent')).to.have.length(1); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance?date={{markDate}}"
+          }
+        },
+        {
+          "name": "RBAC — student marks attendance → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('error code is FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{markBody}}"
+            },
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance"
+          }
+        },
+        {
+          "name": "Validation — future date → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('error code is VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));",
+                  "pm.test('message mentions the future', () => pm.expect(pm.response.json().error.message).to.match(/future/i));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"date\": \"2999-01-01\", \"records\": [] }"
+            },
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance"
+          }
+        },
+        {
+          "name": "Validation — unknown status → 400",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ids = JSON.parse(pm.collectionVariables.get('rosterIds'));",
+                  "pm.collectionVariables.set('badStatusBody', JSON.stringify({ date: '2024-06-03', records: ids.map(studentId => ({ studentId, status: 'sick' })) }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('error code is VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{badStatusBody}}"
+            },
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/attendance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Analytics, filters and isolation (SAT-1, SAT-2, SAT-3, SAT-5)",
+      "item": [
+        {
+          "name": "Student01 own summary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('threshold is 75', () => pm.expect(b.threshold).to.eql(75));",
+                  "pm.test('each course has percentage and a valid level', () => b.courses.forEach(c => { pm.expect(c.percentage).to.be.a('number'); pm.expect(['ok','warning','critical','no-data']).to.include(c.level); }));",
+                  "pm.collectionVariables.set('student01CourseId', b.courses.find(c => c.course.code === 'CSE706').course.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/students/{{student01Id}}/summary"
+          }
+        },
+        {
+          "name": "Isolation — student01 reads student02 summary → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('error code is FORBIDDEN', () => pm.expect(pm.response.json().error.code).to.eql('FORBIDDEN'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/students/{{student02Id}}/summary"
+          }
+        },
+        {
+          "name": "History filters — course + status + date range",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('every record matches all filters', () => b.records.forEach(r => { pm.expect(r.status).to.eql('present'); pm.expect(r.course.code).to.eql('CSE706'); pm.expect(r.date >= '2026-09-01' && r.date <= '2026-10-31').to.be.true; }));",
+                  "pm.test('count matches records', () => pm.expect(b.count).to.eql(b.records.length));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/students/{{student01Id}}/history?courseId={{student01CourseId}}&status=present&from=2026-09-01&to=2026-10-31"
+          }
+        },
+        {
+          "name": "History filters — from after to → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('error code is VALIDATION_ERROR', () => pm.expect(pm.response.json().error.code).to.eql('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/students/{{student01Id}}/history?from=2026-10-10&to=2026-10-01"
+          }
+        },
+        {
+          "name": "Faculty1 course summary CSE706",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const b = pm.response.json();",
+                  "pm.test('10 students with figures', () => pm.expect(b.students).to.have.length(10));",
+                  "pm.test('belowThreshold matches the list', () => pm.expect(b.belowThreshold).to.eql(b.students.filter(s => s.percentage !== null && s.percentage < b.threshold).length));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty1Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/summary"
+          }
+        },
+        {
+          "name": "RBAC — student reads course summary → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{student01Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/courses/{{cse706Id}}/summary"
+          }
+        },
+        {
+          "name": "Admin overview",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('user totals', () => pm.expect(pm.response.json().users).to.eql({ admin: 1, faculty: 2, student: 10 }));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/overview"
+          }
+        },
+        {
+          "name": "RBAC — faculty reads admin overview → 403",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{faculty2Token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/overview"
+          }
+        }
+      ]
+    }
+  ]
+}

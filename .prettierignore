@@ -3,3 +3,5 @@ reports
 docs/jira/*.csv
 package-lock.json
 docs/backlog.md
+postman/*.json
+docs/evidence/
