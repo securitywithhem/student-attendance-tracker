@@ -2,6 +2,8 @@ const config = require('./config');
 const { createApp } = require('./app');
 const { connectDatabase } = require('./db');
 const { seedDatabase } = require('./seed/seed');
+const { buildContainer } = require('./container');
+const { buildApiRouter } = require('./routes');
 
 async function main() {
   const db = await connectDatabase(config.mongoUri);
@@ -10,7 +12,7 @@ async function main() {
     const result = await seedDatabase();
     if (!result.skipped) console.log('Seeded demo data:', result);
   }
-  const app = createApp();
+  const app = createApp({ apiRouter: buildApiRouter(buildContainer()) });
   const server = app.listen(config.port, () =>
     console.log(`Attendance Tracker running on http://localhost:${config.port}`)
   );
