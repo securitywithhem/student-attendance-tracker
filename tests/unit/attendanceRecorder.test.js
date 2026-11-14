@@ -121,3 +121,24 @@ describe('AttendanceRecorder.markAttendance', () => {
     ).rejects.toThrow(NotFoundError);
   });
 });
+
+test('review fix: the summary is built from the configured status list', async () => {
+  const courseRepository = new InMemoryCourseRepository([
+    { id: 'c9', facultyId: 'f1', studentIds: ['s1'] },
+  ]);
+  const recorder = new AttendanceRecorder({
+    courseRepository,
+    attendanceRepository: new InMemoryAttendanceRepository(),
+    validator: new AttendanceValidator({
+      clock: { today: () => '2026-11-14' },
+      statuses: ['present', 'absent', 'excused'],
+    }),
+  });
+  const result = await recorder.markAttendance({
+    user: faculty,
+    courseId: 'c9',
+    date: '2026-11-14',
+    records: [{ studentId: 's1', status: 'excused' }],
+  });
+  expect(result.summary).toEqual({ present: 0, absent: 0, excused: 1 });
+});
