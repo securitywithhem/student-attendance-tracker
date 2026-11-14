@@ -1,0 +1,26 @@
+$ gh run list --limit 50 --json number,displayTitle,event,headBranch,conclusion,createdAt
+Sat Nov 14 11:24:06 UTC 2026
+#24	success	push	main	2026-11-14T10:59:21Z	Merge pull request #11 from securitywithhem/feature/SAT-9-testing-docs
+#23	success	pull_request	feature/SAT-9-testing-docs	2026-11-14T10:58:35Z	SAT-9: Testing documentation, traceability and SOLID map
+#22	success	push	main	2026-11-14T10:56:11Z	Merge pull request #10 from securitywithhem/feature/SAT-8-postman-newman
+#21	success	pull_request	feature/SAT-8-postman-newman	2026-11-14T10:55:08Z	SAT-8: Automated Postman API test suite (Newman in CI)
+#20	success	push	main	2026-11-14T10:54:22Z	Merge pull request #9 from securitywithhem/feature/SAT-7-query-hardening
+#19	success	pull_request	feature/SAT-7-query-hardening	2026-11-14T10:52:55Z	SAT-7: Query performance & error hardening
+#18	success	push	main	2026-11-14T10:52:01Z	Merge pull request #8 from securitywithhem/feature/SAT-1-student-dash…
+#17	success	pull_request	feature/SAT-1-student-dashboard-ui	2026-11-14T10:50:48Z	SAT-1 + SAT-2 + SAT-3: Student dashboard, history filters, alert badges (+ faculty summary and admin UI)
+#16	success	push	main	2026-11-14T10:46:28Z	Merge pull request #7 from securitywithhem/feature/SAT-5-analytics-api
+#15	success	pull_request	feature/SAT-5-analytics-api	2026-11-14T10:45:00Z	SAT-5 + SAT-1/2/3 API: analytics endpoints
+#14	success	push	main	2026-11-14T10:43:49Z	Merge pull request #6 from securitywithhem/feature/SAT-6-attendance-c…
+#13	success	pull_request	feature/SAT-6-attendance-calculation	2026-11-14T10:42:36Z	SAT-6: Attendance calculation (TDD)
+#12	success	push	main	2026-11-14T10:42:08Z	Merge pull request #5 from securitywithhem/feature/SAT-14-mark-attend…
+#11	success	pull_request	feature/SAT-14-mark-attendance-api-ui	2026-11-14T10:41:12Z	SAT-12 + SAT-13 + SAT-14: Faculty course list, roster and daily marking (API + UI)
+#10	success	push	main	2026-11-14T10:39:12Z	Merge pull request #4 from securitywithhem/feature/SAT-16-duplicate-p…
+#9	success	pull_request	feature/SAT-16-duplicate-prevention	2026-11-14T10:38:19Z	SAT-16: Duplicate attendance prevention (TDD)
+#8	success	pull_request	feature/SAT-16-duplicate-prevention	2026-11-14T10:34:30Z	SAT-16: Duplicate attendance prevention (TDD)
+#7	success	push	main	2026-11-14T10:32:55Z	Merge pull request #3 from securitywithhem/feature/SAT-15-jwt-auth-rbac
+#6	success	pull_request	feature/SAT-15-jwt-auth-rbac	2026-11-14T10:31:43Z	SAT-15 + SAT-18: JWT login and role access policies (TDD)
+#5	success	push	main	2026-11-14T10:30:14Z	Merge pull request #2 from securitywithhem/feature/SAT-17-models-seed
+#4	success	pull_request	feature/SAT-17-models-seed	2026-11-14T10:29:08Z	SAT-17: Academic models & seed data
+#3	success	push	main	2026-11-14T10:24:51Z	Merge pull request #1 from securitywithhem/feature/SAT-19-ci-pipeline
+#2	success	pull_request	feature/SAT-19-ci-pipeline	2026-11-14T10:24:02Z	SAT-19: GitHub repo & CI setup
+#1	failure	pull_request	feature/SAT-19-ci-pipeline	2026-11-14T10:23:16Z	SAT-19: GitHub repo & CI setup
