@@ -174,6 +174,9 @@ describe('GET /api/admin/overview', () => {
     expect(res.body.users).toEqual({ admin: 1, faculty: 2, student: 10 });
     expect(res.body.sessions).toBe(60);
     expect(res.body.courses).toHaveLength(3);
+    expect(res.body.courses.find((c) => c.course.code === 'CSE705').facultyName).toBe(
+      'Prof. Raj Malhotra'
+    );
   });
 
   test('403 for faculty and students', async () => {
