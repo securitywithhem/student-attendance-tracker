@@ -1,3 +1,4 @@
+const { isValidObjectId } = require('mongoose');
 const { User } = require('../../models/User');
 const { toUser } = require('./mappers');
 
@@ -8,6 +9,7 @@ class MongoUserRepository {
   }
 
   async findById(id) {
+    if (!isValidObjectId(id)) return null;
     return toUser(await User.findById(id).lean());
   }
 
