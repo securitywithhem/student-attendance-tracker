@@ -1,0 +1,270 @@
+$ npm run test:integration   (branch feature/SAT-5-analytics-api, before implementation)
+Sat Nov 14 10:43:50 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:integration
+> NODE_OPTIONS=--experimental-vm-modules jest tests/integration
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL tests/integration/analytics.test.js
+  ● GET /api/students/:id/summary (SAT-1, SAT-3) › AC1: per-course attended/total/percentage and an overall figure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      35 |   test('AC1: per-course attended/total/percentage and an overall figure', async () => {
+      36 |     const res = await request(app).get(`/api/students/${s01.user.id}/summary`).set(s01.auth);
+    > 37 |     expect(res.status).toBe(200);
+         |                        ^
+      38 |     expect(res.body.threshold).toBe(75);
+      39 |     expect(res.body.courses.map((c) => c.course.code)).toEqual(['CSE701', 'CSE706']);
+      40 |
+
+      at Object.toBe (tests/integration/analytics.test.js:37:24)
+
+  ● GET /api/students/:id/summary (SAT-1, SAT-3) › SAT-3 AC1: a student below 75% gets a warning or critical level and sessions-to-recover
+
+    TypeError: Cannot read properties of undefined (reading 'filter')
+
+      55 |   test('SAT-3 AC1: a student below 75% gets a warning or critical level and sessions-to-recover', async () => {
+      56 |     const res = await request(app).get(`/api/students/${s04.user.id}/summary`).set(s04.auth);
+    > 57 |     const low = res.body.courses.filter((c) => c.percentage < 75);
+         |                                  ^
+      58 |     expect(low.length).toBeGreaterThan(0);
+      59 |     for (const c of low) {
+      60 |       expect(['warning', 'critical']).toContain(c.level);
+
+      at Object.filter (tests/integration/analytics.test.js:57:34)
+
+  ● GET /api/students/:id/summary (SAT-1, SAT-3) › data isolation: a student gets 403 for another student
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 403
+    Received: 404
+
+      66 |   test('data isolation: a student gets 403 for another student', async () => {
+      67 |     const res = await request(app).get(`/api/students/${s02.user.id}/summary`).set(s01.auth);
+    > 68 |     expect(res.status).toBe(403);
+         |                        ^
+      69 |   });
+      70 |
+      71 |   test('faculty can view a student in their course; not one outside it', async () => {
+
+      at Object.toBe (tests/integration/analytics.test.js:68:24)
+
+  ● GET /api/students/:id/summary (SAT-1, SAT-3) › faculty can view a student in their course; not one outside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      73 |     expect(
+      74 |       (await request(app).get(`/api/students/${s04.user.id}/summary`).set(f2.auth)).status
+    > 75 |     ).toBe(200);
+         |       ^
+      76 |     expect(
+      77 |       (await request(app).get(`/api/students/${s01.user.id}/summary`).set(f2.auth)).status
+      78 |     ).toBe(403);
+
+      at Object.toBe (tests/integration/analytics.test.js:75:7)
+
+  ● GET /api/students/:id/history (SAT-2) › returns all records newest first with course info
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      94 |   test('returns all records newest first with course info', async () => {
+      95 |     const res = await history(s01.auth, s01.user.id, {});
+    > 96 |     expect(res.status).toBe(200);
+         |                        ^
+      97 |     expect(res.body.count).toBe(await Attendance.countDocuments({ student: s01.user.id }));
+      98 |     const dates = res.body.records.map((r) => r.date);
+      99 |     expect(dates).toEqual([...dates].sort().reverse());
+
+      at Object.toBe (tests/integration/analytics.test.js:96:24)
+
+  ● GET /api/students/:id/history (SAT-2) › AC1: filters by course, status and date range together
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      110 |       to: '2026-10-09',
+      111 |     });
+    > 112 |     expect(res.status).toBe(200);
+          |                        ^
+      113 |     const expected = await Attendance.countDocuments({
+      114 |       student: s04.user.id,
+      115 |       course: cse706._id,
+
+      at Object.toBe (tests/integration/analytics.test.js:112:24)
+
+  ● GET /api/students/:id/history (SAT-2) › AC2: 400 when from is after to
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      126 |   test('AC2: 400 when from is after to', async () => {
+      127 |     const res = await history(s01.auth, s01.user.id, { from: '2026-10-10', to: '2026-10-01' });
+    > 128 |     expect(res.status).toBe(400);
+          |                        ^
+      129 |   });
+      130 |
+      131 |   test.each([[{ status: 'sick' }], [{ from: '10-10-2026' }], [{ courseId: 'abc' }]])(
+
+      at Object.toBe (tests/integration/analytics.test.js:128:24)
+
+  ● GET /api/students/:id/history (SAT-2) › 400 for invalid filter {"status": "sick"}
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      132 |     '400 for invalid filter %p',
+      133 |     async (query) => {
+    > 134 |       expect((await history(s01.auth, s01.user.id, query)).status).toBe(400);
+          |                                                                    ^
+      135 |     }
+      136 |   );
+      137 |
+
+      at toBe (tests/integration/analytics.test.js:134:68)
+
+  ● GET /api/students/:id/history (SAT-2) › 400 for invalid filter {"from": "10-10-2026"}
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      132 |     '400 for invalid filter %p',
+      133 |     async (query) => {
+    > 134 |       expect((await history(s01.auth, s01.user.id, query)).status).toBe(400);
+          |                                                                    ^
+      135 |     }
+      136 |   );
+      137 |
+
+      at toBe (tests/integration/analytics.test.js:134:68)
+
+  ● GET /api/students/:id/history (SAT-2) › 400 for invalid filter {"courseId": "abc"}
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      132 |     '400 for invalid filter %p',
+      133 |     async (query) => {
+    > 134 |       expect((await history(s01.auth, s01.user.id, query)).status).toBe(400);
+          |                                                                    ^
+      135 |     }
+      136 |   );
+      137 |
+
+      at toBe (tests/integration/analytics.test.js:134:68)
+
+  ● GET /api/students/:id/history (SAT-2) › data isolation: 403 for another student’s history
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 403
+    Received: 404
+
+      137 |
+      138 |   test('data isolation: 403 for another student’s history', async () => {
+    > 139 |     expect((await history(s01.auth, s02.user.id, {})).status).toBe(403);
+          |                                                               ^
+      140 |   });
+      141 | });
+      142 |
+
+      at Object.toBe (tests/integration/analytics.test.js:139:63)
+
+  ● GET /api/courses/:id/summary (SAT-5) › AC1: per-student figures, sessions held and count below threshold
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      145 |     const f1 = await login(app, 'faculty1@sat.edu');
+      146 |     const res = await request(app).get(`/api/courses/${cse706._id}/summary`).set(f1.auth);
+    > 147 |     expect(res.status).toBe(200);
+          |                        ^
+      148 |     expect(res.body.course.code).toBe('CSE706');
+      149 |     expect(res.body.sessionsHeld).toBe(20);
+      150 |     expect(res.body.students).toHaveLength(10);
+
+      at Object.toBe (tests/integration/analytics.test.js:147:24)
+
+  ● GET /api/courses/:id/summary (SAT-5) › 403 for a student and for faculty who do not teach the course
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 403
+    Received: 404
+
+      160 |     expect(
+      161 |       (await request(app).get(`/api/courses/${cse706._id}/summary`).set(s01.auth)).status
+    > 162 |     ).toBe(403);
+          |       ^
+      163 |     expect((await request(app).get(`/api/courses/${cse705._id}/summary`).set(f1.auth)).status).toBe(
+      164 |       403
+      165 |     );
+
+      at Object.toBe (tests/integration/analytics.test.js:162:7)
+
+  ● GET /api/admin/overview › admin sees totals and every course
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      171 |     const admin = await login(app, 'admin@sat.edu');
+      172 |     const res = await request(app).get('/api/admin/overview').set(admin.auth);
+    > 173 |     expect(res.status).toBe(200);
+          |                        ^
+      174 |     expect(res.body.users).toEqual({ admin: 1, faculty: 2, student: 10 });
+      175 |     expect(res.body.sessions).toBe(60);
+      176 |     expect(res.body.courses).toHaveLength(3);
+
+      at Object.toBe (tests/integration/analytics.test.js:173:24)
+
+  ● GET /api/admin/overview › 403 for faculty and students
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 403
+    Received: 404
+
+      179 |   test('403 for faculty and students', async () => {
+      180 |     const f1 = await login(app, 'faculty1@sat.edu');
+    > 181 |     expect((await request(app).get('/api/admin/overview').set(f1.auth)).status).toBe(403);
+          |                                                                                 ^
+      182 |     expect((await request(app).get('/api/admin/overview').set(s01.auth)).status).toBe(403);
+      183 |   });
+      184 | });
+
+      at Object.toBe (tests/integration/analytics.test.js:181:81)
+
+Test Suites: 1 failed, 6 passed, 7 total
+Tests:       15 failed, 40 passed, 55 total
+Snapshots:   0 total
+Time:        2.987 s, estimated 3 s
+Ran all test suites matching tests/integration.

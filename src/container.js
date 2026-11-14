@@ -10,6 +10,9 @@ const { BcryptPasswordHasher } = require('./services/BcryptPasswordHasher');
 const { CourseService } = require('./services/CourseService');
 const { AttendanceRecorder } = require('./services/AttendanceRecorder');
 const { AttendanceValidator } = require('./services/AttendanceValidator');
+const { AttendanceCalculator } = require('./services/AttendanceCalculator');
+const { AttendanceQueryService } = require('./services/AttendanceQueryService');
+const attendanceRules = require('./config/attendanceRules');
 
 function buildContainer(overrides = {}) {
   const settings = { ...config, ...overrides };
@@ -37,7 +40,16 @@ function buildContainer(overrides = {}) {
     validator: new AttendanceValidator(),
   });
 
+  const attendanceQueryService = new AttendanceQueryService({
+    courseRepository,
+    userRepository,
+    attendanceRepository,
+    calculator: new AttendanceCalculator(attendanceRules),
+    rules: attendanceRules,
+  });
+
   return {
+    attendanceQueryService,
     userRepository,
     courseRepository,
     attendanceRepository,
