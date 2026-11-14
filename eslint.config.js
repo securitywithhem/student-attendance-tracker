@@ -8,7 +8,12 @@ module.exports = [
   {
     files: ['**/*.js'],
     languageOptions: { ecmaVersion: 2023, sourceType: 'commonjs', globals: { ...globals.node } },
-    rules: { 'no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
+    rules: {
+      'no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      ],
+    },
   },
   {
     files: ['tests/**/*.js'],

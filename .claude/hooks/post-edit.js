@@ -21,7 +21,13 @@ process.stdin.on('end', () => {
   if (file.includes(`${path.sep}node_modules${path.sep}`)) process.exit(0);
 
   const run = (args) =>
-    spawnSync('npx', args, { cwd: projectDir, encoding: 'utf8', shell: false, timeout: 120000 });
+    spawnSync('npx', args, {
+      cwd: projectDir,
+      encoding: 'utf8',
+      shell: false,
+      timeout: 120000,
+      env: { ...process.env, NODE_OPTIONS: '--experimental-vm-modules' },
+    });
 
   const lint = run(['eslint', '--no-warn-ignored', file]);
   const tests = run([
