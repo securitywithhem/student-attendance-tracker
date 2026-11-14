@@ -20,11 +20,9 @@ function errorHandler(err, req, res, _next) {
       .json({ error: { code: 'VALIDATION_ERROR', message: 'Request body is not valid JSON' } });
   }
   if (process.env.NODE_ENV !== 'test') console.error(err);
-  return res
-    .status(500)
-    .json({
-      error: { code: 'INTERNAL_ERROR', message: 'Something went wrong. Please try again.' },
-    });
+  return res.status(500).json({
+    error: { code: 'INTERNAL_ERROR', message: 'Something went wrong. Please try again.' },
+  });
 }
 
 module.exports = { notFound, errorHandler };
