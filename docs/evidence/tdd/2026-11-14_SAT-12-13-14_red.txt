@@ -1,0 +1,314 @@
+$ npm run test:integration   (before course/attendance routes)
+Sat Nov 14 10:35:14 UTC 2026
+
+> student-attendance-tracker@0.1.0 test:integration
+> NODE_OPTIONS=--experimental-vm-modules jest tests/integration
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL tests/integration/markAttendance.test.js
+  ● POST /api/courses/:id/attendance (SAT-14) › AC1: 201 with the saved count and summary
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › the saved session can be read back for that date
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › a date with no session reports marked: false
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › SAT-16 AC1: resubmitting the same course and date returns 409 and changes nothing
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › AC2: 400 for missing date
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › AC2: 400 for future date
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › AC2: 400 for bad status
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › AC2: 400 for empty list
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● POST /api/courses/:id/attendance (SAT-14) › AC2: 400 for incomplete register
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● Role checks over HTTP (SAT-18) › AC1: a student gets 403 when marking attendance
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● Role checks over HTTP (SAT-18) › AC2: faculty get 403 marking a course they do not teach
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● Role checks over HTTP (SAT-18) › AC1: a student gets 403 reading the course roster or a session
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+  ● Role checks over HTTP (SAT-18) › admins can read any roster but cannot mark
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      17 |   const admin = await login(app, 'admin@sat.edu');
+      18 |   const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 19 |   course706 = all.find((c) => c.code === 'CSE706');
+         |                   ^
+      20 |   course705 = all.find((c) => c.code === 'CSE705');
+      21 |   roster = (await request(app).get(`/api/courses/${course706.id}/roster`).set(faculty1.auth)).body
+      22 |     .students;
+
+      at Object.find (tests/integration/markAttendance.test.js:19:19)
+
+FAIL tests/integration/courses.test.js
+  ● GET /api/courses (SAT-12) › AC1: faculty see only the courses they teach, with enrolled counts
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      13 |     const { auth } = await login(app, 'faculty1@sat.edu');
+      14 |     const res = await request(app).get('/api/courses').set(auth);
+    > 15 |     expect(res.status).toBe(200);
+         |                        ^
+      16 |     expect(res.body.courses.map((c) => c.code)).toEqual(['CSE701', 'CSE706']);
+      17 |     expect(res.body.courses.find((c) => c.code === 'CSE706')).toMatchObject({
+      18 |       name: 'Agile Software Development',
+
+      at Object.toBe (tests/integration/courses.test.js:15:24)
+
+  ● GET /api/courses (SAT-12) › AC2: students see only the courses they are enrolled in
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      25 |     const { auth } = await login(app, 'student01@sat.edu');
+      26 |     const res = await request(app).get('/api/courses').set(auth);
+    > 27 |     expect(res.status).toBe(200);
+         |                        ^
+      28 |     expect(res.body.courses.map((c) => c.code)).toEqual(['CSE701', 'CSE706']);
+      29 |   });
+      30 |
+
+      at Object.toBe (tests/integration/courses.test.js:27:24)
+
+  ● GET /api/courses (SAT-12) › admins see every course
+
+    TypeError: expect(received).toHaveLength(expected)
+
+    Matcher error: received value must have a length property whose value must be a number
+
+    Received has value: undefined
+
+      32 |     const { auth } = await login(app, 'admin@sat.edu');
+      33 |     const res = await request(app).get('/api/courses').set(auth);
+    > 34 |     expect(res.body.courses).toHaveLength(3);
+         |                              ^
+      35 |   });
+      36 |
+      37 |   test('401 without a token', async () => {
+
+      at Object.toHaveLength (tests/integration/courses.test.js:34:30)
+
+  ● GET /api/courses (SAT-12) › 401 without a token
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 404
+
+      36 |
+      37 |   test('401 without a token', async () => {
+    > 38 |     expect((await request(app).get('/api/courses')).status).toBe(401);
+         |                                                             ^
+      39 |   });
+      40 | });
+      41 |
+
+      at Object.toBe (tests/integration/courses.test.js:38:61)
+
+  ● GET /api/courses/:id/roster (SAT-13) › AC1: lists enrolled students sorted by roll number
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      44 |     const { auth } = await login(app, 'faculty1@sat.edu');
+      45 |     const { body } = await request(app).get('/api/courses').set(auth);
+    > 46 |     const cse706 = body.courses.find((c) => c.code === 'CSE706');
+         |                                 ^
+      47 |     const res = await request(app).get(`/api/courses/${cse706.id}/roster`).set(auth);
+      48 |     expect(res.status).toBe(200);
+      49 |     expect(res.body.course.code).toBe('CSE706');
+
+      at Object.find (tests/integration/courses.test.js:46:33)
+
+  ● GET /api/courses/:id/roster (SAT-13) › AC2: 403 for a course the faculty member does not teach
+
+    TypeError: Cannot read properties of undefined (reading 'find')
+
+      63 |     const admin = await login(app, 'admin@sat.edu');
+      64 |     const all = (await request(app).get('/api/courses').set(admin.auth)).body.courses;
+    > 65 |     const cse705 = all.find((c) => c.code === 'CSE705'); // taught by faculty2
+         |                        ^
+      66 |     const { auth } = await login(app, 'faculty1@sat.edu');
+      67 |     expect((await request(app).get(`/api/courses/${cse705.id}/roster`).set(auth)).status).toBe(403);
+      68 |   });
+
+      at Object.find (tests/integration/courses.test.js:65:24)
+
+  ● GET /api/courses/:id/roster (SAT-13) › 400 for a malformed course id, 404 for an unknown one
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 404
+
+      70 |   test('400 for a malformed course id, 404 for an unknown one', async () => {
+      71 |     const { auth } = await login(app, 'faculty1@sat.edu');
+    > 72 |     expect((await request(app).get('/api/courses/not-an-id/roster').set(auth)).status).toBe(400);
+         |                                                                                        ^
+      73 |     expect(
+      74 |       (await request(app).get('/api/courses/65a000000000000000000000/roster').set(auth)).status
+      75 |     ).toBe(404);
+
+      at Object.toBe (tests/integration/courses.test.js:72:88)
+
+Test Suites: 2 failed, 4 passed, 6 total
+Tests:       20 failed, 18 passed, 38 total
+Snapshots:   0 total
+Time:        2.663 s
+Ran all test suites matching tests/integration.
