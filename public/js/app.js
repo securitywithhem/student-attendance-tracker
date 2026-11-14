@@ -25,7 +25,13 @@
   const ROUTES = {
     faculty: [
       [/^#\/course\/([a-f0-9]{24})$/, (m) => window.Views.faculty.coursePage(m[1])],
+      [/^#\/course\/([a-f0-9]{24})\/summary$/, (m) => window.Views.faculty.courseSummary(m[1])],
       [/^#\/?$/, () => window.Views.faculty.courseList()],
+    ],
+    student: [[/^#\/?$/, () => window.Views.student.dashboard(currentUser())]],
+    admin: [
+      [/^#\/course\/([a-f0-9]{24})\/summary$/, (m) => window.Views.admin.courseSummary(m[1])],
+      [/^#\/?$/, () => window.Views.admin.overview()],
     ],
   };
 
